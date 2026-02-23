@@ -12,22 +12,22 @@ export class AuthService {
     ){}
 
     async userLogin(payload: LoginDto){
-        const existUser = await this.prisma.user.findUnique({
+        const existAdmin = await this.prisma.user.findUnique({
             where: {email: payload.email}
         })
 
-        if(!existUser){
+        if(!existAdmin){
             throw new NotFoundException("Email or password is incorrect")
         }
 
-        if(!await bcrypt.compare(payload.password, existUser.password)){
+        if(!await bcrypt.compare(payload.password, existAdmin.password)){
             throw new NotFoundException("Email or password is incorrect")
         }
 
         return {
             success: true,
             message: "You are logged in",
-            toke: this.jwtService.sign({id: existUser.id, email:existUser.email, role: existUser.role})
+            toke: this.jwtService.sign({id: existAdmin.id, email:existAdmin.email, role: existAdmin.role})
         }
     }
 }

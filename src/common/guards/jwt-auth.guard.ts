@@ -1,7 +1,8 @@
-import { CanActivate, ExecutionContext, UnauthorizedException } from "@nestjs/common";
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from '@nestjs/jwt'
 
 
+@Injectable()
 export class AuthGuard implements CanActivate{
     constructor(private jwtService : JwtService){}
 
@@ -22,7 +23,7 @@ export class AuthGuard implements CanActivate{
 
             return true;
         } catch (error) {
-            throw new UnauthorizedException()
+            throw new UnauthorizedException("I am in auth guard")
         }
     }
 }

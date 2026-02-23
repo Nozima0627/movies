@@ -13,10 +13,16 @@ import { FavoritesModule } from './modules/favorites/favorites.module';
 import { ReviewModule } from './modules/review/review.module';
 import { WatchHistoryModule } from './modules/watch-history/watch-history.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { EmailModule } from './common/email/email.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { PrismaModule } from './core/database/prisma.module';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+        rootPath: join(process.cwd(), "src", 'uploads'),
+        serveRoot: '/avatars'
+    }),
     ConfigModule.forRoot({
         isGlobal: true
     }),
@@ -32,7 +38,8 @@ import { EmailModule } from './common/email/email.module';
     MovieFilesModule,
     FavoritesModule,
     ReviewModule,
-    WatchHistoryModule
+    WatchHistoryModule,
+    PrismaModule
   ]
 })
 export class AppModule {}

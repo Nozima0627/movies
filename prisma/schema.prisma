@@ -12,6 +12,12 @@ enum Role {
     SUPERADMIN
 }
 
+enum Status {
+    active
+    inactive
+    delete
+}
+
 enum PaymentStatus {
     active
     expired
@@ -49,11 +55,12 @@ enum Quality {
 
 model User {
     id         Int      @id @default(autoincrement())
-    username   String
-    email      String @unique
+    username   String   @unique
+    email      String   @unique
     password   String
     role       Role     @default(USER)
-    avatar_url String
+    status     Status   @default(active)
+    avatar     String?
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
