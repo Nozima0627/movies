@@ -165,7 +165,7 @@ export class UsersService {
         }
     }
 
-    async updateUser(id : number, payload : UpdateUserDto, avatar?: string){
+    async updateUser(id : number, payload : UpdateUserDto, avatar?: Express.Multer.File){
         const existUser = await this.prisma.user.findFirst({
             where:{
                 id,
@@ -187,7 +187,7 @@ export class UsersService {
                 username: payload.username ?? existUser.username,
                 email: payload.email ?? existUser.email,
                 password: hashPass,
-                avatar: avatar ?? existUser.avatar
+                avatar: avatar?.filename ?? existUser.avatar
             }
         })
         return {

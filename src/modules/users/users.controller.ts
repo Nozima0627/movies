@@ -148,7 +148,7 @@ export class UsersController {
         @Body() payload: UpdateUserDto,
         @UploadedFile() avatar? : Express.Multer.File
     ){
-        return this.userService.updateUser(id, payload, avatar?.filename)
+        return this.userService.updateUser(id, payload, avatar)
     }
 
     @UseGuards(AuthGuard)
