@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UnsupportedMediaTypeException, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Req, UnsupportedMediaTypeException, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { RegisterAdminDto } from './dto/register.admin.dto';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
@@ -9,6 +9,7 @@ import { RoleGuard } from 'src/common/guards/role.guard';
 import { Roles } from 'src/common/decorators/roles';
 import { Role } from '@prisma/client';
 import { RegisterUserDto } from './dto/register.user.dto';
+import { UpdateUserDto } from './dto/update.user.dto';
 
 @ApiBearerAuth()
 @Controller('users')
@@ -24,6 +25,34 @@ export class UsersController {
     @Get('all/admins')
     getAllAdmins(){
         return this.userService.getAllAdmins()
+    }
+
+    @ApiOperation({
+        summary: `${Role.SUPERADMIN}, ${Role.ADMIN}`,
+        description: "Superadmin and admin can do this operation"
+    })
+    @UseGuards(AuthGuard, RoleGuard)
+    @Roles(Role.SUPERADMIN, Role.ADMIN)
+    @Get('all/users')
+    getAllUsers(){
+        return this.userService.getAllUsers()
+    }
+
+    @UseGuards(AuthGuard)
+    @Get('single/:id')
+    getOneUser(
+        @Param('id', ParseIntPipe) id: number,
+        @Req() req: Request
+    ){
+        return this.userService.getOneUser(id, req['user'])
+    }
+
+    @UseGuards(AuthGuard)
+    @Get('my/favorites/:id')
+    getMyFavorites(
+        @Param('id', ParseIntPipe) id: number
+    ){
+        return this.userService.getMyFavorites(id)
     }
 
     @ApiOperation({
@@ -66,9 +95,9 @@ export class UsersController {
     @Post('register/admin')
     registerAdmin(
         @Body() payload : RegisterAdminDto,
-        @UploadedFile() file? : Express.Multer.File
+        @UploadedFile() avatar? : Express.Multer.File
     ){
-        return this.userService.registerAdmin(payload, file?.filename)
+        return this.userService.registerAdmin(payload, avatar?.filename)
     }
 
 
@@ -102,11 +131,32 @@ export class UsersController {
             cb(null, true)
         }
     }))
+    @UseGuards(AuthGuard)
     @Post('register/user')
     registerUser(
         @Body() payload : RegisterUserDto,
-        @UploadedFile() file? : Express.Multer.File
+        @UploadedFile() avatar? : Express.Multer.File
     ){
-        return this.userService.registerUser(payload, file?.filename)
+        return this.userService.registerUser(payload, avatar?.filename)
+    }
+
+
+    @UseGuards(AuthGuard)
+    @Put('update/user:id')
+    updateUser(
+        @Param('id', ParseIntPipe) id : number,
+        @Body() payload: UpdateUserDto,
+        @UploadedFile() avatar? : Express.Multer.File
+    ){
+        return this.userService.updateUser(id, payload, avatar?.filename)
+    }
+
+    @UseGuards(AuthGuard)
+    @Delete(":id")
+    deleteUser(
+        @Param('id', ParseIntPipe) id: number
+    ){
+        return this.userService.deleteUser(id)
     }
 }
+

@@ -74,12 +74,12 @@ model User {
 
 model Profile {
     id         Int      @id @default(autoincrement())
-    user_id    Int
+    user_id    Int      @unique
     full_name  String
-    phone      String
+    phone      String   @unique
     country    String
     created_at DateTime @default(now())
-    update_at  DateTime @updatedAt
+    updated_at DateTime @updatedAt
     users      User     @relation(fields: [user_id], references: [id])
 }
 
@@ -125,8 +125,9 @@ model Payment {
 model Category {
     id              Int             @id @default(autoincrement())
     name            String
-    slud            String          @unique
+    slug            String          @unique
     description     String
+    status          Status          @default(active)
     movieCategories MovieCategory[]
 }
 
@@ -142,6 +143,7 @@ model Movie {
     subscription_type SubscriptionType @default(free)
     view_count        Int              @default(0)
     created_by        Int
+    status            Status           @default(active)
     created_at        DateTime         @default(now())
     updated_at        DateTime         @updatedAt
 
