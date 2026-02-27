@@ -118,7 +118,7 @@ export class MoviesService {
         }
     }
 
-    async addMovie(payload : AddMovieDto, currentUser : { id: number}){
+    async addMovie(payload : AddMovieDto, currentUser : { id: number}, poster: string){
         const existMovie = await this.prisma.movie.findFirst({
             where:{
                 title: payload.title,
@@ -128,7 +128,8 @@ export class MoviesService {
         await this.prisma.movie.create({
             data: {
                 ...payload,
-                created_by: currentUser.id
+                created_by: currentUser.id,
+                poster_url: poster
             }
         })
 

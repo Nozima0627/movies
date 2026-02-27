@@ -40,7 +40,7 @@ export class MovieFilesService {
 
     }
 
-    async uploadMovieFile(payload : CreateMovieFilesDto){
+    async uploadMovieFile(payload : CreateMovieFilesDto, filename : string){
         const existMovieFile = await this.prisma.movieFiles.findFirst({
             where:{movie_id: payload.movie_id}
         })
@@ -49,7 +49,10 @@ export class MovieFilesService {
             throw new BadRequestException("This movie file is already uploaded")
         }
         await this.prisma.movieFiles.create({
-            data: payload
+            data: {
+                ...payload,
+                file_url: filename
+            }
         })
         return {
             success: true,

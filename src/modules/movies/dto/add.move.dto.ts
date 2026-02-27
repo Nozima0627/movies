@@ -22,9 +22,9 @@ export class AddMovieDto{
     @IsNumber()
     duration_minutes : number
 
-    @ApiProperty()
-    @IsString()
-    poster_url : string
+    // @ApiProperty()
+    // @IsString()
+    // poster_url : string
 
     @ApiProperty()
     @IsNumber()
